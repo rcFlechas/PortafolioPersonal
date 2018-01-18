@@ -3,7 +3,8 @@ jQuery(document).ready(function($) {
 "use strict";
 
     //Contact
-    $('form.contactForm').submit(function(){
+    $('form.contactForm').submit(function(e){
+        e.preventDefault();
 
         var f = $(this).find('.form-group'), 
         ferror = false, 
@@ -79,15 +80,20 @@ jQuery(document).ready(function($) {
         if( ferror ) return false; 
         else {
             $.ajax({                
-                url: "https://formspree.io/rcflechas@gmail.com/",
-                type: "POST",
+                url: "https://formspree.io/rcflechas@gmail.com",
+                /*headers: {
+                    Accept : "application/json; charset=utf-8",
+                            "Content-Type": "application/json; charset=utf-8", 
+                            "Access-Control-Allow-Origin": "https://formspree.io"
+                },*/
+                method: "POST",
                 data: {
                     name: $("#name").val(),
                     email: $("#email").val(),
                     subject: $("#subject").val(),
                     message: $("#message").val()
-                },
-                dataType: "json"
+                },  
+                dataType: "jsonp"
             }).done(function(){
                 $("#name").val("");
                 $("#email").val("");
