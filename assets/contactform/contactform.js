@@ -79,32 +79,46 @@ jQuery(document).ready(function($) {
         });
         if( ferror ) return false; 
         else {
-            $.ajax({                
-                url: "https://formspree.io/rcflechas@gmail.com",
-                /*headers: {
-                    Accept : "application/json; charset=utf-8",
-                            "Content-Type": "application/json; charset=utf-8", 
-                            "Access-Control-Allow-Origin": "https://formspree.io"
-                },*/
-                method: "POST",
-                data: {
-                    name: $("#name").val(),
-                    email: $("#email").val(),
-                    subject: $("#subject").val(),
-                    message: $("#message").val()
-                },  
-                dataType: "jsonp"
-            }).done(function(){
-                $("#name").val("");
-                $("#email").val("");
-                $("#subject").val("");
-                $("#message").val("");
-                $("#sendmessage").addClass("show");         
-                $("#errormessage").removeClass("show"); 
-            }).fail(function(){
-                $("#sendmessage").removeClass("show");
-                $("#errormessage").addClass("show");
-                $('#errormessage').html("Erro al enviar email!");               
+            
+            var m = "Nombre: "+$("#name").val()+" \n Correo: "+$("#email").val()+" \n Mensaje: " + $("#message").val();
+
+            var str = {
+              host: "cp2.astrahosting.com",
+              puerto: "587",
+              usuario: "contacto@servifix.co",
+              clave: "servifix.2018",
+              asunto: $("#subject").val(),
+              mensaje: m,
+              destinatario: "rcflechas@gmail.com"
+            };
+
+            $.ajax({
+                headers: { 
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json' 
+                },
+                type: "POST",
+                url: "https://enviaremail.herokuapp.com/email/unico",
+                //url: "http://localhost:8080/email/masivo",
+                data: JSON.stringify(str),        
+                dataType: 'json',
+                //contentType: "application/json",
+                //traditional: true,       
+                complete: function(xhr, statusText){
+                  var status = xhr.status;
+                  if (status == 200) {
+                    $("#name").val("");
+                    $("#email").val("");
+                    $("#subject").val("");
+                    $("#message").val("");
+                    $("#sendmessage").addClass("show");
+                    $("#errormessage").removeClass("show");                    
+                  } else {
+                    $("#sendmessage").removeClass("show");
+                    $("#errormessage").addClass("show");
+                    $('#errormessage').html(msg);
+                  }
+                }
             });
         }    
         return false;
